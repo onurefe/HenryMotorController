@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.497191580/GCC_PATH/delimiter=\:
+environment/project/ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.497191580/GCC_PATH/operation=append
+environment/project/ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.497191580/GCC_PATH/value=/home/onur/STM32Toolchain/gcc-arm/bin
+environment/project/ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.497191580/append=true
+environment/project/ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.497191580/appendContributed=true
