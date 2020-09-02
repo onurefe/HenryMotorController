@@ -46,10 +46,6 @@
 
 /* USER CODE END Includes */
 
-#include "stm32f3xx.h"
-#include "stm32f3xx_ll_system.h"
-#include "stm32f3xx_ll_gpio.h"
-#include "stm32f3xx_ll_exti.h"
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
@@ -76,8 +72,10 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 void DMA1_Channel1_IRQHandler(void);
-void TIM1_UP_TIM16_IRQHandler(void);
+void DMA1_Channel4_IRQHandler(void);
+void DMA1_Channel5_IRQHandler(void);
 void USART1_IRQHandler(void);
+void TIM6_DAC_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

@@ -48,24 +48,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f3xx_ll_adc.h"
-#include "stm32f3xx_ll_crc.h"
-#include "stm32f3xx_ll_dma.h"
-#include "stm32f3xx_ll_rcc.h"
-#include "stm32f3xx_ll_bus.h"
-#include "stm32f3xx_ll_system.h"
-#include "stm32f3xx_ll_exti.h"
-#include "stm32f3xx_ll_cortex.h"
-#include "stm32f3xx_ll_utils.h"
-#include "stm32f3xx_ll_pwr.h"
-#include "stm32f3xx_ll_tim.h"
-#include "stm32f3xx_ll_usart.h"
-#include "stm32f3xx.h"
-#include "stm32f3xx_ll_gpio.h"
-
-#if defined(USE_FULL_ASSERT)
-#include "stm32_assert.h"
-#endif /* USE_FULL_ASSERT */
+#include "stm32f3xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -87,6 +70,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -95,52 +80,50 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define ISENS_A_Pin LL_GPIO_PIN_0
+#define PWM_FREQUENCY 22000
+#define TIM1_RELOAD (TIM1_CLOCK_FREQUENCY / PWM_FREQUENCY)
+#define SAMPLES_PER_PERIOD 8
+#define SAMPLING_FREQUENCY (SAMPLES_PER_PERIOD * PWM_FREQUENCY)
+#define TIM2_RELOAD (TIM2_CLOCK_FREQUENCY / SAMPLING_FREQUENCY)
+#define TIM2_CLOCK_FREQUENCY 72000000
+#define TIM1_CLOCK_FREQUENCY 144000000
+#define CONTROL_FREQUENCY 10000
+#define TIM6_CLOCK_FREQUENCY 72000000
+#define TIM6_RELOAD (TIM6_CLOCK_FREQUENCY / CONTROL_FREQUENCY)
+#define ISENS_A_Pin GPIO_PIN_0
 #define ISENS_A_GPIO_Port GPIOA
-#define ISENS_B_Pin LL_GPIO_PIN_1
+#define ISENS_B_Pin GPIO_PIN_1
 #define ISENS_B_GPIO_Port GPIOA
-#define VSENS_Pin LL_GPIO_PIN_2
+#define VSENS_Pin GPIO_PIN_2
 #define VSENS_GPIO_Port GPIOA
-#define CALAD_Pin LL_GPIO_PIN_3
+#define CALAD_Pin GPIO_PIN_3
 #define CALAD_GPIO_Port GPIOA
-#define CALBC_Pin LL_GPIO_PIN_4
+#define CALBC_Pin GPIO_PIN_4
 #define CALBC_GPIO_Port GPIOA
-#define nRESET_Pin LL_GPIO_PIN_5
+#define nRESET_Pin GPIO_PIN_5
 #define nRESET_GPIO_Port GPIOA
-#define nSLEEP_Pin LL_GPIO_PIN_6
+#define nSLEEP_Pin GPIO_PIN_6
 #define nSLEEP_GPIO_Port GPIOA
-#define PWM_A_Pin LL_GPIO_PIN_7
+#define PWM_A_Pin GPIO_PIN_7
 #define PWM_A_GPIO_Port GPIOA
-#define nDRV8881_SLEEP_Pin LL_GPIO_PIN_0
+#define nDRV8881_SLEEP_Pin GPIO_PIN_0
 #define nDRV8881_SLEEP_GPIO_Port GPIOB
-#define PWM_AN_Pin LL_GPIO_PIN_8
-#define PWM_AN_GPIO_Port GPIOA
-#define PWM_B_Pin LL_GPIO_PIN_9
+#define PWM_nA_Pin GPIO_PIN_8
+#define PWM_nA_GPIO_Port GPIOA
+#define PWM_B_Pin GPIO_PIN_9
 #define PWM_B_GPIO_Port GPIOA
-#define STEP_Pin LL_GPIO_PIN_10
+#define STEP_Pin GPIO_PIN_10
 #define STEP_GPIO_Port GPIOA
-#define DIR_Pin LL_GPIO_PIN_11
+#define DIR_Pin GPIO_PIN_11
 #define DIR_GPIO_Port GPIOA
-#define PWM_BN_Pin LL_GPIO_PIN_12
-#define PWM_BN_GPIO_Port GPIOA
-#define nDRV8881_FAULT_Pin LL_GPIO_PIN_3
+#define PWM_nB_Pin GPIO_PIN_12
+#define PWM_nB_GPIO_Port GPIOA
+#define nDRV8881_FAULT_Pin GPIO_PIN_3
 #define nDRV8881_FAULT_GPIO_Port GPIOB
-#define DRIVER_TX_Pin LL_GPIO_PIN_6
+#define DRIVER_TX_Pin GPIO_PIN_6
 #define DRIVER_TX_GPIO_Port GPIOB
-#define DRIVER_RX_Pin LL_GPIO_PIN_7
+#define DRIVER_RX_Pin GPIO_PIN_7
 #define DRIVER_RX_GPIO_Port GPIOB
-#ifndef NVIC_PRIORITYGROUP_0
-#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
-                                                                 4 bits for subpriority */
-#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
-                                                                 3 bits for subpriority */
-#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
-                                                                 2 bits for subpriority */
-#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
-                                                                 1 bit  for subpriority */
-#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
-                                                                 0 bit  for subpriority */
-#endif
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
